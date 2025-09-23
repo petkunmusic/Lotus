@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lotus</title>
+  <style>
+    /* Reset + base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1a1a1a, #050505);
+      color: #f2f2f2;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Abstract moving background "particles" */
+    .orb {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(100, 100, 255, 0.15), transparent 70%);
+      animation: float 12s ease-in-out infinite alternate;
+      filter: blur(120px);
+      z-index: 0;
+    }
+    .orb:nth-child(1) { top: -200px; left: -200px; animation-delay: 0s; }
+    .orb:nth-child(2) { bottom: -200px; right: -200px; animation-delay: 4s; background: radial-gradient(circle, rgba(255, 80, 120, 0.12), transparent 70%); }
+    .orb:nth-child(3) { top: 20%; right: 10%; animation-delay: 8s; background: radial-gradient(circle, rgba(80, 255, 180, 0.12), transparent 70%); }
+
+    @keyframes float {
+      0%   { transform: translateY(0) translateX(0); }
+      100% { transform: translateY(-40px) translateX(40px); }
+    }
+
+    /* Title */
+    h1 {
+      font-size: 3.5rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      z-index: 1;
+      position: relative;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+      to   { text-shadow: 0 0 25px rgba(255,255,255,0.25); }
+    }
+
+    /* Countdown */
+    #countdown {
+      font-size: 1.8rem;
+      margin-top: 25px;
+      letter-spacing: 0.15em;
+      opacity: 0.9;
+      z-index: 1;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background elements -->
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <!-- Content -->
+  <h1>Lotus</h1>
+  <div id="countdown"></div>
+
+  <script>
+    // Set your target date here
+    const releaseDate = new Date("2026-11-01T00:00:00").getTime();
+    const countdown = document.getElementById("countdown");
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = releaseDate - now;
+
+      if (distance < 0) {
+        countdown.innerHTML = "It has begun.";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdown.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
