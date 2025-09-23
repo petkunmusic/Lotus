@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --num-color: #082033;      /* strong readable number color */
+    --num-color: #082033;
     --label-color: rgba(8,32,51,0.55);
     --sky-a: #dbeeff;
     --sky-b: #f6eefe;
@@ -26,7 +26,7 @@
     color:var(--num-color);
   }
 
-  /* Cloud layers (large blurred ellipses grouped in SVGs) */
+  /* Cloud layers */
   .cloud-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; }
   svg.cloud {
     position:absolute;
@@ -43,7 +43,7 @@
   @keyframes drift2{ from{transform:translateX(-50vw)} to{transform:translateX(70vw)} }
   @keyframes drift3{ from{transform:translateX(-70vw)} to{transform:translateX(90vw)} }
 
-  /* Soft lotus behind title */
+  /* Lotus behind title */
   .lotus-svg {
     position:absolute;
     left:50%;
@@ -62,10 +62,8 @@
     z-index:3;
     text-align:center;
     padding: 2vh 3vw;
-    pointer-events:auto;
   }
 
-  /* Title */
   h1.title {
     font-family: "Playfair Display", Georgia, serif;
     font-size: clamp(36px, 8vmin, 84px);
@@ -80,20 +78,8 @@
     text-shadow: 0 6px 20px rgba(170,170,200,0.06);
     position:relative;
   }
-  /* subtle, slow shimmer */
-  h1.title::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    left:-120%;
-    background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
-    mix-blend-mode:screen;
-    animation: shimmer 12s linear infinite;
-    pointer-events:none;
-  }
   @keyframes shimmer { 0%{left:-120%} 55%{left:120%} 100%{left:120%} }
 
-  /* Countdown: minimal — just numbers and labels, no boxes */
   .countdown {
     display:flex;
     gap:1.2rem;
@@ -109,13 +95,10 @@
     min-width:72px;
   }
   .num {
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     font-weight:700;
     color:var(--num-color);
     font-size: clamp(22px, 3.4vmin, 36px);
-    line-height:1;
-    transition: opacity 0.45s ease; /* gentle fade only */
-    will-change: opacity, content;
+    transition: opacity 0.45s ease;
   }
   .label {
     margin-top:6px;
@@ -138,7 +121,6 @@
     opacity:0.9;
     z-index:2;
     pointer-events:none;
-    transform-origin:center;
   }
   @keyframes petalFloat {
     0% { transform: translateY(12vh) rotate(0deg) scale(.97); opacity:0 }
@@ -146,123 +128,104 @@
     100% { transform: translateY(-110vh) rotate(320deg) scale(1.02); opacity:0 }
   }
 
-  /* Responsive tweaks */
+  /* Mailing list */
+  .mailing {
+    margin-top:2rem;
+  }
+
+  /* Social links */
+  .socials {
+    position:absolute;
+    bottom:18px;
+    right:18px;
+    font-size:14px;
+  }
+  .socials a {
+    margin-left:14px;
+    text-decoration:none;
+    color:var(--num-color);
+    font-weight:600;
+    opacity:0.7;
+    transition:opacity .3s;
+  }
+  .socials a:hover{opacity:1}
+
   @media (max-width:640px){
     .countdown { gap: .7rem; }
     .unit { min-width: 56px;}
     .num { font-size: clamp(18px, 5vmin, 28px); }
-    h1.title { font-size: clamp(28px, 12vmin, 52px); letter-spacing:.12em; }
+    h1.title { font-size: clamp(28px, 12vmin, 52px); }
   }
 </style>
 </head>
 <body>
 
-  <!-- CLOUDS (big soft cloud SVGs) -->
-  <div class="cloud-layer" aria-hidden="true">
-    <svg class="cloud c-mid" viewBox="0 0 1600 360" preserveAspectRatio="xMidYMid slice">
-      <g fill="#ffffff">
-        <ellipse cx="200" cy="190" rx="180" ry="90"/>
-        <ellipse cx="420" cy="150" rx="220" ry="110"/>
-        <ellipse cx="700" cy="170" rx="240" ry="120"/>
-        <ellipse cx="1000" cy="140" rx="180" ry="90"/>
-        <ellipse cx="1280" cy="190" rx="210" ry="100"/>
-        <ellipse cx="1520" cy="160" rx="160" ry="80"/>
-      </g>
-    </svg>
-
-    <svg class="cloud c-mid2" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMid slice">
-      <g fill="#ffffff">
-        <ellipse cx="180" cy="210" rx="200" ry="100"/>
-        <ellipse cx="480" cy="190" rx="260" ry="130"/>
-        <ellipse cx="840" cy="220" rx="300" ry="150"/>
-        <ellipse cx="1180" cy="180" rx="220" ry="110"/>
-        <ellipse cx="1480" cy="210" rx="190" ry="95"/>
-      </g>
-    </svg>
-
-    <svg class="cloud c-back" viewBox="0 0 1600 320" preserveAspectRatio="xMidYMid slice">
-      <g fill="#ffffff">
-        <ellipse cx="300" cy="120" rx="160" ry="80"/>
-        <ellipse cx="620" cy="110" rx="200" ry="100"/>
-        <ellipse cx="960" cy="135" rx="220" ry="110"/>
-        <ellipse cx="1380" cy="120" rx="180" ry="90"/>
-      </g>
-    </svg>
+  <!-- Clouds -->
+  <div class="cloud-layer">
+    <svg class="cloud c-mid" viewBox="0 0 1600 360"><g fill="#fff"><ellipse cx="200" cy="190" rx="180" ry="90"/><ellipse cx="420" cy="150" rx="220" ry="110"/></g></svg>
+    <svg class="cloud c-mid2" viewBox="0 0 1600 420"><g fill="#fff"><ellipse cx="180" cy="210" rx="200" ry="100"/><ellipse cx="480" cy="190" rx="260" ry="130"/></g></svg>
+    <svg class="cloud c-back" viewBox="0 0 1600 320"><g fill="#fff"><ellipse cx="300" cy="120" rx="160" ry="80"/><ellipse cx="620" cy="110" rx="200" ry="100"/></g></svg>
   </div>
 
-  <!-- subtle lotus behind title -->
-  <svg class="lotus-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-    <defs><linearGradient id="lgA" x1="0" x2="1"><stop offset="0%" stop-color="#fff6ff"/><stop offset="100%" stop-color="#e9f8ff"/></linearGradient></defs>
-    <g transform="translate(50,50) scale(0.9)">
-      <path d="M0,-28 C8,-18 18,-12 28,-8 C20,2 12,10 0,20 C-12,10 -20,2 -28,-8 C-18,-12 -8,-18 0,-28 Z" fill="url(#lgA)"/>
-      <path d="M0,-18 C6,-12 14,-8 20,-5 C14,4 8,10 0,16 C-8,10 -14,4 -20,-5 C-14,-8 -6,-12 0,-18 Z" fill="url(#lgA)" opacity="0.95"/>
-      <circle cx="0" cy="6" r="6" fill="#fff6f9" opacity="0.92"/>
-    </g>
-  </svg>
+  <!-- Lotus -->
+  <svg class="lotus-svg" viewBox="0 0 100 100"><g transform="translate(50,50)"><path d="M0,-28 C8,-18 18,-12 28,-8 C20,2 12,10 0,20 C-12,10 -20,2 -28,-8 C-18,-12 -8,-18 0,-28 Z" fill="#fff"/></g></svg>
 
-  <!-- center -->
-  <main class="center" role="main" aria-label="Album countdown">
+  <!-- Center -->
+  <main class="center">
     <h1 class="title">LOTUS</h1>
-
-    <div class="countdown" role="status" aria-live="polite">
+    <div class="countdown">
       <div class="unit"><span id="num-d" class="num">--</span><span class="label">Days</span></div>
       <div class="unit"><span id="num-h" class="num">--</span><span class="label">Hours</span></div>
       <div class="unit"><span id="num-m" class="num">--</span><span class="label">Minutes</span></div>
       <div class="unit"><span id="num-s" class="num">--</span><span class="label">Seconds</span></div>
     </div>
+
+    <!-- Mailing list (ConvertKit) -->
+    <div class="mailing">
+      <form action="https://app.kit.com/forms/8592163/subscriptions" method="post">
+        <input type="email" name="email_address" placeholder="Enter your email" required style="padding:10px;border:1px solid #ccc;border-radius:6px;width:240px;">
+        <button type="submit" style="padding:10px 16px;margin-left:8px;border:none;border-radius:6px;background:#082033;color:#fff;font-weight:600;cursor:pointer;">Join</button>
+      </form>
+      <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+    </div>
   </main>
 
+  <!-- Socials -->
+  <div class="socials">
+    <a href="https://open.spotify.com/artist/0P0aWztUtQ2Z6i0dCN1vHo" target="_blank">Spotify</a>
+    <a href="https://music.apple.com/us/artist/petkun/1629312134" target="_blank">Apple</a>
+    <a href="https://www.instagram.com/petkun.music/" target="_blank">Instagram</a>
+  </div>
+
 <script>
-/* ----------------- Countdown: silent fade update (no blink/zoom) ----------------- */
 (function(){
   const release = new Date("2026-11-01T00:00:00").getTime();
   const elD = document.getElementById('num-d');
   const elH = document.getElementById('num-h');
   const elM = document.getElementById('num-m');
   const elS = document.getElementById('num-s');
-
   function setFade(el, value){
-    // only update when value changes
     if (el.textContent === String(value)) return;
-    // fade out
     el.style.opacity = 0;
-    // after fade-out, change text and fade in
-    setTimeout(() => {
-      el.textContent = value;
-      el.style.opacity = 1;
-    }, 260); // matches the CSS transition-ish feel
+    setTimeout(() => { el.textContent = value; el.style.opacity = 1; }, 260);
   }
-
   function tick(){
     const now = Date.now();
     const diff = release - now;
-    if (diff <= 0){
-      document.querySelector('.countdown').innerHTML = '<div style="font-weight:700;color:var(--num-color);">OUT NOW</div>';
-      return;
-    }
+    if (diff <= 0){ document.querySelector('.countdown').innerHTML = '<div>OUT NOW</div>'; return; }
     const days = Math.floor(diff / (1000*60*60*24));
     const hours = Math.floor((diff / (1000*60*60)) % 24);
     const minutes = Math.floor((diff / (1000*60)) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
-
-    setFade(elD, days);
-    setFade(elH, hours);
-    setFade(elM, minutes);
-    setFade(elS, seconds);
+    setFade(elD, days); setFade(elH, hours); setFade(elM, minutes); setFade(elS, seconds);
   }
-
-  // start values visible immediately
-  elD.style.opacity = elH.style.opacity = elM.style.opacity = elS.style.opacity = 1;
-  tick();
-  setInterval(tick, 1000);
+  tick(); setInterval(tick, 1000);
 })();
 
-/* ----------------- Petals (soft, limited for CPU) ----------------- */
 (function(){
   function spawn(){
     const p = document.createElement('div');
     p.className = 'petal';
-    // spawn mostly around top/middle region so they drift across
     p.style.left = (-8 + Math.random()*116) + 'vw';
     p.style.top = ( -8 + Math.random()*30 ) + 'vh';
     const dur = 12 + Math.random()*14;
@@ -271,10 +234,7 @@
     document.body.appendChild(p);
     setTimeout(()=> p.remove(), (dur+0.6)*1000);
   }
-
-  // gentle spawn
   setInterval(spawn, 900);
-  // initial burst
   for(let i=0;i<5;i++) setTimeout(spawn, i*180);
 })();
 </script>
