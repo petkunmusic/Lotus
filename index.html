@@ -1,150 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Lotus – Countdown</title>
-  <style>
-    /* Reset */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LOTUS — Countdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --num-color: #082033;      /* strong readable number color */
+    --label-color: rgba(8,32,51,0.55);
+    --sky-a: #dbeeff;
+    --sky-b: #f6eefe;
+    --sky-c: #fff7ea;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+    overflow:hidden;
+    color:var(--num-color);
+  }
 
-    body {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      background: radial-gradient(circle at 20% 20%, #1a1a1a, #050505);
-      color: #fff;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      overflow: hidden;
-      position: relative;
-    }
+  /* Cloud layers (large blurred ellipses grouped in SVGs) */
+  .cloud-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; }
+  svg.cloud {
+    position:absolute;
+    left:-20vw;
+    width:180vw;
+    height:60vh;
+    filter: blur(36px) saturate(105%);
+    opacity:0.92;
+  }
+  .c-mid { top:10vh; animation: drift1 120s linear infinite; }
+  .c-mid2{ top:40vh; animation: drift2 160s linear infinite; }
+  .c-back{ top:66vh; animation: drift3 220s linear infinite; opacity:0.82; }
+  @keyframes drift1{ from{transform:translateX(-30vw)} to{transform:translateX(40vw)} }
+  @keyframes drift2{ from{transform:translateX(-50vw)} to{transform:translateX(70vw)} }
+  @keyframes drift3{ from{transform:translateX(-70vw)} to{transform:translateX(90vw)} }
 
-    /* Orbs */
-    .orb {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(100, 100, 255, 0.15), transparent 70%);
-      animation: float 18s ease-in-out infinite alternate;
-      filter: blur(120px);
-      z-index: 0;
-    }
-    .orb:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
-    .orb:nth-child(2) { bottom: 15%; right: 15%; background: radial-gradient(circle, rgba(255,100,150,0.15), transparent 70%); animation-delay: 6s; }
-    .orb:nth-child(3) { top: 50%; left: 70%; background: radial-gradient(circle, rgba(150,255,200,0.12), transparent 70%); animation-delay: 12s; }
+  /* Soft lotus behind title */
+  .lotus-svg {
+    position:absolute;
+    left:50%;
+    top:42%;
+    transform:translate(-50%,-50%);
+    width:36vmin;
+    height:36vmin;
+    opacity:0.12;
+    z-index:1;
+    filter: blur(2px) drop-shadow(0 10px 30px rgba(255,240,255,0.06));
+  }
 
-    @keyframes float {
-      from { transform: translateY(0) translateX(0) scale(1); }
-      to { transform: translateY(-40px) translateX(40px) scale(1.1); }
-    }
+  /* Center content */
+  .center {
+    position:relative;
+    z-index:3;
+    text-align:center;
+    padding: 2vh 3vw;
+    pointer-events:auto;
+  }
 
-    /* Lotus SVG background */
-    .lotus-outline {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      opacity: 0.05;
-      z-index: 1;
-      animation: lotus-glow 20s ease-in-out infinite;
-    }
-    @keyframes lotus-glow {
-      0%, 100% { opacity: 0.04; transform: scale(1); }
-      50% { opacity: 0.12; transform: scale(1.05); }
-    }
+  /* Title */
+  h1.title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(36px, 8vmin, 84px);
+    letter-spacing:0.18em;
+    line-height:1;
+    margin:0;
+    background: linear-gradient(90deg, #8fbeff 0%, #e7b8ff 45%, #ffdcbf 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-rendering:optimizeLegibility;
+    text-shadow: 0 6px 20px rgba(170,170,200,0.06);
+    position:relative;
+  }
+  /* subtle, slow shimmer */
+  h1.title::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    left:-120%;
+    background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+    mix-blend-mode:screen;
+    animation: shimmer 12s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes shimmer { 0%{left:-120%} 55%{left:120%} 100%{left:120%} }
 
-    /* Title */
-    h1 {
-      font-size: 3.5rem;
-      z-index: 2;
-      text-align: center;
-      letter-spacing: 0.15em;
-      animation: title-glow 6s ease-in-out infinite;
-    }
-    @keyframes title-glow {
-      0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.1); }
-      50% { text-shadow: 0 0 40px rgba(200,200,255,0.4); }
-    }
+  /* Countdown: minimal — just numbers and labels, no boxes */
+  .countdown {
+    display:flex;
+    gap:1.2rem;
+    margin-top:1.1rem;
+    justify-content:center;
+    align-items:center;
+    z-index:3;
+  }
+  .unit {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:72px;
+  }
+  .num {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-weight:700;
+    color:var(--num-color);
+    font-size: clamp(22px, 3.4vmin, 36px);
+    line-height:1;
+    transition: opacity 0.45s ease; /* gentle fade only */
+    will-change: opacity, content;
+  }
+  .label {
+    margin-top:6px;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--label-color);
+    font-weight:600;
+  }
 
-    /* Countdown */
-    #countdown {
-      margin-top: 20px;
-      font-size: 1.3rem;
-      letter-spacing: 0.3em;
-      opacity: 0.85;
-      z-index: 2;
-    }
+  /* Petals */
+  .petal {
+    position:absolute;
+    width:18px;
+    height:26px;
+    border-radius:48% 52% 52% 48%;
+    background: linear-gradient(180deg, #fff0fb 0%, #ffd9f2 50%, #e8caff 100%);
+    box-shadow: 0 6px 18px rgba(255,190,240,0.28);
+    filter: blur(0.6px) saturate(120%);
+    opacity:0.9;
+    z-index:2;
+    pointer-events:none;
+    transform-origin:center;
+  }
+  @keyframes petalFloat {
+    0% { transform: translateY(12vh) rotate(0deg) scale(.97); opacity:0 }
+    10%{ opacity:1 }
+    100% { transform: translateY(-110vh) rotate(320deg) scale(1.02); opacity:0 }
+  }
 
-    /* Petals */
-    .petal {
-      position: absolute;
-      width: 12px;
-      height: 20px;
-      background: rgba(255, 200, 230, 0.15);
-      border-radius: 50% 50% 50% 50%;
-      animation: drift 25s linear infinite;
-      filter: blur(1px);
-      z-index: 1;
-    }
-    @keyframes drift {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
-    }
-  </style>
+  /* Responsive tweaks */
+  @media (max-width:640px){
+    .countdown { gap: .7rem; }
+    .unit { min-width: 56px;}
+    .num { font-size: clamp(18px, 5vmin, 28px); }
+    h1.title { font-size: clamp(28px, 12vmin, 52px); letter-spacing:.12em; }
+  }
+</style>
 </head>
 <body>
-  <!-- Orbs -->
-  <div class="orb"></div>
-  <div class="orb"></div>
-  <div class="orb"></div>
 
-  <!-- Lotus outline (SVG) -->
-  <svg class="lotus-outline" viewBox="0 0 512 512" fill="none" stroke="white" stroke-width="6">
-    <path d="M256 32c-40 80-96 128-192 160 64 32 96 80 128 128-16-96 16-160 64-192 48 32 80 96 64 192 32-48 64-96 128-128-96-32-152-80-192-160z"/>
+  <!-- CLOUDS (big soft cloud SVGs) -->
+  <div class="cloud-layer" aria-hidden="true">
+    <svg class="cloud c-mid" viewBox="0 0 1600 360" preserveAspectRatio="xMidYMid slice">
+      <g fill="#ffffff">
+        <ellipse cx="200" cy="190" rx="180" ry="90"/>
+        <ellipse cx="420" cy="150" rx="220" ry="110"/>
+        <ellipse cx="700" cy="170" rx="240" ry="120"/>
+        <ellipse cx="1000" cy="140" rx="180" ry="90"/>
+        <ellipse cx="1280" cy="190" rx="210" ry="100"/>
+        <ellipse cx="1520" cy="160" rx="160" ry="80"/>
+      </g>
+    </svg>
+
+    <svg class="cloud c-mid2" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMid slice">
+      <g fill="#ffffff">
+        <ellipse cx="180" cy="210" rx="200" ry="100"/>
+        <ellipse cx="480" cy="190" rx="260" ry="130"/>
+        <ellipse cx="840" cy="220" rx="300" ry="150"/>
+        <ellipse cx="1180" cy="180" rx="220" ry="110"/>
+        <ellipse cx="1480" cy="210" rx="190" ry="95"/>
+      </g>
+    </svg>
+
+    <svg class="cloud c-back" viewBox="0 0 1600 320" preserveAspectRatio="xMidYMid slice">
+      <g fill="#ffffff">
+        <ellipse cx="300" cy="120" rx="160" ry="80"/>
+        <ellipse cx="620" cy="110" rx="200" ry="100"/>
+        <ellipse cx="960" cy="135" rx="220" ry="110"/>
+        <ellipse cx="1380" cy="120" rx="180" ry="90"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- subtle lotus behind title -->
+  <svg class="lotus-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+    <defs><linearGradient id="lgA" x1="0" x2="1"><stop offset="0%" stop-color="#fff6ff"/><stop offset="100%" stop-color="#e9f8ff"/></linearGradient></defs>
+    <g transform="translate(50,50) scale(0.9)">
+      <path d="M0,-28 C8,-18 18,-12 28,-8 C20,2 12,10 0,20 C-12,10 -20,2 -28,-8 C-18,-12 -8,-18 0,-28 Z" fill="url(#lgA)"/>
+      <path d="M0,-18 C6,-12 14,-8 20,-5 C14,4 8,10 0,16 C-8,10 -14,4 -20,-5 C-14,-8 -6,-12 0,-18 Z" fill="url(#lgA)" opacity="0.95"/>
+      <circle cx="0" cy="6" r="6" fill="#fff6f9" opacity="0.92"/>
+    </g>
   </svg>
 
-  <!-- Title -->
-  <h1>LOTUS</h1>
+  <!-- center -->
+  <main class="center" role="main" aria-label="Album countdown">
+    <h1 class="title">LOTUS</h1>
 
-  <!-- Countdown -->
-  <div id="countdown"></div>
+    <div class="countdown" role="status" aria-live="polite">
+      <div class="unit"><span id="num-d" class="num">--</span><span class="label">Days</span></div>
+      <div class="unit"><span id="num-h" class="num">--</span><span class="label">Hours</span></div>
+      <div class="unit"><span id="num-m" class="num">--</span><span class="label">Minutes</span></div>
+      <div class="unit"><span id="num-s" class="num">--</span><span class="label">Seconds</span></div>
+    </div>
+  </main>
 
-  <!-- Petals -->
-  <script>
-    // Countdown
-    const releaseDate = new Date("2026-11-01T00:00:00").getTime();
-    const countdownEl = document.getElementById("countdown");
+<script>
+/* ----------------- Countdown: silent fade update (no blink/zoom) ----------------- */
+(function(){
+  const release = new Date("2026-11-01T00:00:00").getTime();
+  const elD = document.getElementById('num-d');
+  const elH = document.getElementById('num-h');
+  const elM = document.getElementById('num-m');
+  const elS = document.getElementById('num-s');
 
-    setInterval(() => {
-      const now = new Date().getTime();
-      const distance = releaseDate - now;
+  function setFade(el, value){
+    // only update when value changes
+    if (el.textContent === String(value)) return;
+    // fade out
+    el.style.opacity = 0;
+    // after fade-out, change text and fade in
+    setTimeout(() => {
+      el.textContent = value;
+      el.style.opacity = 1;
+    }, 260); // matches the CSS transition-ish feel
+  }
 
-      if (distance <= 0) {
-        countdownEl.innerHTML = "OUT NOW";
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);
-
-    // Generate petals
-    for (let i = 0; i < 25; i++) {
-      const petal = document.createElement("div");
-      petal.className = "petal";
-      document.body.appendChild(petal);
-      petal.style.left = Math.random() * 100 + "vw";
-      petal.style.top = Math.random() * 100 + "vh";
-      petal.style.animationDuration = (15 + Math.random() * 20) + "s";
-      petal.style.opacity = Math.random() * 0.4 + 0.1;
+  function tick(){
+    const now = Date.now();
+    const diff = release - now;
+    if (diff <= 0){
+      document.querySelector('.countdown').innerHTML = '<div style="font-weight:700;color:var(--num-color);">OUT NOW</div>';
+      return;
     }
-  </script>
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const minutes = Math.floor((diff / (1000*60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    setFade(elD, days);
+    setFade(elH, hours);
+    setFade(elM, minutes);
+    setFade(elS, seconds);
+  }
+
+  // start values visible immediately
+  elD.style.opacity = elH.style.opacity = elM.style.opacity = elS.style.opacity = 1;
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ----------------- Petals (soft, limited for CPU) ----------------- */
+(function(){
+  function spawn(){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    // spawn mostly around top/middle region so they drift across
+    p.style.left = (-8 + Math.random()*116) + 'vw';
+    p.style.top = ( -8 + Math.random()*30 ) + 'vh';
+    const dur = 12 + Math.random()*14;
+    p.style.animation = `petalFloat ${dur}s linear forwards`;
+    p.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), (dur+0.6)*1000);
+  }
+
+  // gentle spawn
+  setInterval(spawn, 900);
+  // initial burst
+  for(let i=0;i<5;i++) setTimeout(spawn, i*180);
+})();
+</script>
 </body>
 </html>
